@@ -6,7 +6,7 @@ On va utiliser [macroquad](https://macroquad.rs/) et s'appuyer notamment sur [ce
 
 ## Setup
 
-[cargo](https://doc.rust-lang.org/cargo/) est LE gestionnaire de paquet en rust. Il permet de gérer les dépendances de façon simple et fluide. 
+[cargo](https://doc.rust-lang.org/cargo/) est LE gestionnaire de paquet en rust. Il permet de gérer les dépendances de façon simple et fluide.
 
 `cargo run` pour exécuter votre premier Hello world sans avoir écrit une ligne de code. (Cette commande a générer un repertoire `target` qui contient les binaires)
 
@@ -23,7 +23,7 @@ Nous nous intéresserons à deux fichiers
 ## Idée générale
 Ce jeu a été repris d'un exemple fourni par macroquad.
 
-Deux possibilités: 
+Deux possibilités:
 * réimplémenter le snake à votre façon de zéro
 * améliorer la qualité du code
 * ajouter des fonctionnalités
@@ -36,9 +36,26 @@ Deux possibilités:
 * déplacement à intervalle régulier
 * game over si il se mange lui même ou si il se cogne dans un mur
 
+### Qualité du code
+Actuellement de est dans la main loop, découper le code en plusieurs fonctions:
+* register input
+* move snake
+* check game over
+* dessine un carré qui prend un point et une couleur
+* dessine le fond
+* dessine le score
+* initialisation
+* ...
+
+Pour la vérification de si on s'est mordu la queue, comparer directement la tete et le morceau de queue
+
 
 ### Fonctionnalités supplémentaire
 * monde circulaire: si snake arrive au bord, il réapparait de l'autre côté
-* portal
+* portal: téléportation d'un point à l'autre. Les portails peuvent bouger ou non
 * tracer un arc en ciel
-
+* deux joueurs
+* un autre snake géré par une "IA" qui peut t'attauqer
+* pouvoir tirer sur des ennemmis
+* des murs qui apparaissent
+* des fruits piégés qui te raccourcissent
