@@ -29,21 +29,6 @@ struct Snake {
     dir: Point,
 }
 
-/// Pour chaque fleche pressées, on renvot la direction mis a jour
-fn register_input(dir: Point) -> Point {
-    if is_key_down(KeyCode::Right) && dir != LEFT {
-        RIGHT
-    } else if is_key_down(KeyCode::Left) && dir != RIGHT {
-        LEFT
-    } else if is_key_down(KeyCode::Up) && dir != DOWN {
-        UP
-    } else if is_key_down(KeyCode::Down) && dir != UP {
-        DOWN
-    } else {
-        dir
-    }
-}
-
 #[macroquad::main("Snake")]
 async fn main() {
     // initialisation
@@ -78,7 +63,17 @@ async fn main() {
     loop {
         // ce if contient la logique du jeu
         if !game_over {
-            snake.dir = register_input(snake.dir);
+            snake.dir = if is_key_down(KeyCode::Right) && snake.dir != LEFT {
+                RIGHT
+            } else if is_key_down(KeyCode::Left) && snake.dir != RIGHT {
+                LEFT
+            } else if is_key_down(KeyCode::Up) && snake.dir != DOWN {
+                UP
+            } else if is_key_down(KeyCode::Down) && snake.dir != UP {
+                DOWN
+            } else {
+                snake.dir
+            };
 
             // si c'est le moment de mettre à jour
             if get_time() - last_update > speed {
