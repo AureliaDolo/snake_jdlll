@@ -1,4 +1,6 @@
 // https://github.com/not-fl3/macroquad/blob/master/examples/snake.rs
+//
+// Licencié sous MIT ou Apache 2.0, à votre option, voir les fichiers LICENSE-* ou le dépôt de macroquad.
 
 #![doc = include_str!("../README.md")]
 // Le prelude de macro quad contient tout ce qui est utile pour developper en utilisant macroquad
