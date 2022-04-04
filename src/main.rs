@@ -13,7 +13,7 @@ use std::collections::VecDeque;
 
 /// taille de la grille
 /// Note: les commenataire avec 3 / apparaissent dans la doc générée par `cargo doc`
-/// (quand ilis sont placés aux bon endroits)
+/// (quand ils sont placés aux bon endroits)
 const SQUARES: i16 = 16;
 
 /// Un alias de type bien pratique <https://doc.rust-lang.org/reference/items/type-aliases.htmlhttps://doc.rust-lang.org/std/collections/struct.VecDeque.html>
