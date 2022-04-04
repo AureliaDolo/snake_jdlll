@@ -82,7 +82,10 @@ async fn main() {
                 // l'ancien emplacement de la tete passe dans la queue
                 snake.body.push_front(snake.head);
                 // on met a jour la nouvelle tete en fonction de la queue
-                snake.head = (snake.head.0 + snake.dir.0, snake.head.1 + snake.dir.1);
+                snake.head = (
+                    (snake.head.0 + snake.dir.0).rem_euclid(SQUARES),
+                    (snake.head.1 + snake.dir.1).rem_euclid(SQUARES),
+                );
 
                 // si la tete est sur un fruit
                 if snake.head == fruit {
@@ -105,8 +108,8 @@ async fn main() {
                 }
 
                 // vérifier si on s'est mordu la queue
-                for (x, y) in &snake.body {
-                    if *x == snake.head.0 && *y == snake.head.1 {
+                for body in &snake.body {
+                    if snake.head == *body {
                         game_over = true;
                     }
                 }
