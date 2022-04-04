@@ -29,6 +29,24 @@ struct Snake {
     dir: Point,
 }
 
+fn draw_square((x, y): Point, color: Color) {
+    let game_size = screen_width().min(screen_height());
+    let offset_x = (screen_width() - game_size) / 2. + 10.;
+    let offset_y = (screen_height() - game_size) / 2. + 10.;
+    let sq_size = (screen_height() - offset_y * 2.) / SQUARES as f32;
+    draw_rectangle(
+        offset_x + x as f32 * sq_size,
+        offset_y + y as f32 * sq_size,
+        sq_size,
+        sq_size,
+        color,
+    );
+}
+
+fn random_point() -> Point {
+    (rand::gen_range(0, SQUARES), rand::gen_range(0, SQUARES))
+}
+
 #[macroquad::main("Snake")]
 async fn main() {
     // initialisation
@@ -41,7 +59,11 @@ async fn main() {
         body: VecDeque::new(), // sans queue
     };
     // fruit généré aléatoirement
-    let mut fruit: Point = (rand::gen_range(0, SQUARES), rand::gen_range(0, SQUARES));
+    let mut fruit: Point = random_point();
+
+    // portals
+    let mut orange: Point = random_point();
+    let mut blue: Point = random_point();
 
     // note: pour score et speed les types sont inférés par le compilateur
     // et même si ce sont des nombres, ils ne peuvent pas spontanément interagir ensemble
@@ -87,24 +109,22 @@ async fn main() {
                     (snake.head.1 + snake.dir.1).rem_euclid(SQUARES),
                 );
 
+                if snake.head == orange {
+                    snake.head = blue;
+                    orange = random_point();
+                } else if snake.head == blue {
+                    snake.head = orange;
+                    blue = random_point();
+                }
                 // si la tete est sur un fruit
                 if snake.head == fruit {
                     // un nouveau fruit
-                    fruit = (rand::gen_range(0, SQUARES), rand::gen_range(0, SQUARES));
+                    fruit = random_point();
                     score += 100;
-                    speed *= 0.9;
+                    speed += 0.01;
                 } else {
                     // la ou etait le dernier block de la queue, il n'y a plus rien
                     snake.body.pop_back();
-                }
-
-                // si on dépasse les limites game over
-                if snake.head.0 < 0
-                    || snake.head.1 < 0
-                    || snake.head.0 >= SQUARES
-                    || snake.head.1 >= SQUARES
-                {
-                    game_over = true;
                 }
 
                 // vérifier si on s'est mordu la queue
@@ -161,26 +181,19 @@ async fn main() {
                 sq_size,
                 DARKGREEN,
             );
+            draw_square(snake.head, DARKGREEN);
 
             // dessiner le corps
-            for (x, y) in &snake.body {
-                draw_rectangle(
-                    offset_x + *x as f32 * sq_size,
-                    offset_y + *y as f32 * sq_size,
-                    sq_size,
-                    sq_size,
-                    LIME,
-                );
+            for body in &snake.body {
+                draw_square(*body, LIME);
             }
 
             // dessiner le fruit
-            draw_rectangle(
-                offset_x + fruit.0 as f32 * sq_size,
-                offset_y + fruit.1 as f32 * sq_size,
-                sq_size,
-                sq_size,
-                GOLD,
-            );
+            draw_square(fruit, GOLD);
+
+            draw_square(orange, ORANGE);
+
+            draw_square(blue, BLUE);
 
             // écrire le score
             draw_text(
