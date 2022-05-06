@@ -27,6 +27,7 @@ struct Snake {
     head: Point,
     body: VecDeque<Point>,
     dir: Point,
+    rainbow: Vec<(Point, Color)>,
 }
 
 fn draw_square((x, y): Point, color: Color) {
@@ -47,6 +48,16 @@ fn random_point() -> Point {
     (rand::gen_range(0, SQUARES), rand::gen_range(0, SQUARES))
 }
 
+fn random_color() -> Color {
+    [
+        rand::gen_range::<u8>(0, u8::MAX),
+        rand::gen_range::<u8>(0, u8::MAX),
+        rand::gen_range::<u8>(0, u8::MAX),
+        rand::gen_range::<u8>(0, u8::MAX),
+    ]
+    .into()
+}
+
 #[macroquad::main("Snake")]
 async fn main() {
     // initialisation
@@ -57,6 +68,7 @@ async fn main() {
         head: (0, 0),          // on commence en haut a gauche
         dir: RIGHT,            // en direction de la droite
         body: VecDeque::new(), // sans queue
+        rainbow: Vec::new(),
     };
     // fruit généré aléatoirement
     let mut fruit: Point = random_point();
@@ -124,7 +136,10 @@ async fn main() {
                     speed += 0.01;
                 } else {
                     // la ou etait le dernier block de la queue, il n'y a plus rien
-                    snake.body.pop_back();
+
+                    snake
+                        .rainbow
+                        .push((snake.body.pop_back().unwrap(), random_color()));
                 }
 
                 // vérifier si on s'est mordu la queue
@@ -172,15 +187,10 @@ async fn main() {
                     LIGHTGRAY,
                 );
             }
-
+            for (body, color) in &snake.rainbow {
+                draw_square(*body, *color);
+            }
             // dessiner la tête
-            draw_rectangle(
-                offset_x + snake.head.0 as f32 * sq_size,
-                offset_y + snake.head.1 as f32 * sq_size,
-                sq_size,
-                sq_size,
-                DARKGREEN,
-            );
             draw_square(snake.head, DARKGREEN);
 
             // dessiner le corps
@@ -225,6 +235,7 @@ async fn main() {
                     head: (0, 0),
                     dir: RIGHT,
                     body: VecDeque::new(),
+                    rainbow: Vec::new(),
                 };
                 fruit = (rand::gen_range(0, SQUARES), rand::gen_range(0, SQUARES));
                 score = 0;
